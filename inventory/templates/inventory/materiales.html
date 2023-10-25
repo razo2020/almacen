@@ -1,0 +1,73 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+	{% if messages %}
+		<div class="row mt-3">
+			{% for message in messages %}
+				{% if message.tags == 'error' %}
+					<div class="col-md-10 col-12 mx-auto alert alert-danger">
+						{{ message }}
+					</div>
+				{% else %}
+					<div class="col-md-10 col-12 mx-auto alert alert-success">
+						{{ message }}
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="col-md-10 col-12 mx-auto mt-5">
+			<div class="container text-center">
+				<h1>MATERIALES</h1>
+			</div>
+			<div class="d-flex justify-content-end">
+				<a href="{% url 'add-material' %}" class="btn btn-primary">+</a>
+			</div>
+
+			<table id='datatable' class="table table-hover row-border order-column compact">
+				<thead>
+					<tr>
+						<th scope="col">CODIGO</th>
+						<th scope="col">NOMBRE</th>
+						<th scope="col">DESCRIPCION</th>
+						<th scope="col">UM</th>
+						<th scope="col">CATEGORIA</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if items|length == 0 %}
+					<tr>
+						<th scope="row">-</th>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					{% endif %}
+
+					{% for item in items %}
+					<tr>
+						<th scope="row" > <a href="{% url 'edit-material' item.cod_material %}" > {{ item.cod_material }} </a></th>
+						<td>{{ item.nombre_material }}</td>
+						<td>{{ item.descripcion_material }}</td>
+						<td>{{ item.umb }}</td>
+						<td>{{ item.categoria}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock content %}
+
+{% block script  %}
+
+	<script > 
+		new DataTable('#datatable',  {
+			language: {
+				url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+			},}
+		);
+	</script>
+{% endblock script %}

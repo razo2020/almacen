@@ -1,0 +1,165 @@
+{% extends 'inventory/base.html' %}
+{% block style %}
+	<style>
+		div.dt-button-collection {
+			width: 240px;
+		}
+		 
+		div.dt-button-collection button.dt-button {
+			display: inline-block;
+			width: 32%;
+		}
+		div.dt-button-collection button.buttons-colvis {
+			
+			display: inline-block;
+			font-size: 20px;
+  padding: 20px;
+			width: 49%;
+		}
+		div.dt-button-collection h3 {
+			color:#ffffff;
+			font-weight: bold;
+			background-color:#808080;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			font-weight: 100;
+			border-bottom: 1px solid rgba(150, 150, 150, 0.5);
+			font-size: 1em;
+			padding: 0 1em;
+		}
+		div.dt-button-collection h3.not-top-heading {
+			margin-top: 10px;
+		}
+	</style>
+{% endblock style %}
+{% block content %}
+	{% if messages %}
+		<div class="row mt-3">
+			{% for message in messages %}
+				{% if message.tags == 'error' %}
+					<div class="col-md-10 col-12 mx-auto alert alert-danger">
+						{{ message }}
+					</div>
+				{% else %}
+					<div class="col-md-10 col-12 mx-auto alert alert-success">
+						{{ message }}
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="col-md-10 col-12 mx-auto mt-5">
+			<div class="container text-center">
+				<h1>KARDEX</h1>
+			</div>
+
+			<table id='datatable' class="table table-hover row-border order-column compact">
+				<thead>
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">ALMACEN</th>
+						<th scope="col">UBICACION</th>
+						<th scope="col">MATERIAL</th>
+						<th scope="col">MOVIMIENTO</th>
+						<th scope="col">CANTIDAD</th>
+						<th scope="col">ORDEN COMPRA</th>
+						<th scope="col">GUIA</th>
+						<th scope="col">OBSERVACIONES</th>
+						{% comment %} <th scope="col"></th> {% endcomment %}
+					</tr>
+				</thead>
+				<tbody>
+					{% if items|length == 0 %}
+					<tr>
+						<th scope="row">-</th>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td></td>
+					</tr>
+					{% endif %}
+
+					{% for item in items %}
+					<tr>
+						<th scope="row" > <a href="{% url 'edit-kardex' item.id %}" > {{ item.id }} </a></th>
+						<td>{{ item.almacen }}</td>
+						<td>{{ item.nom_ubicacion }}</td>
+						<td>{{ item.material }}</td>
+						{% if item.movimiento == 2 %}
+							<td class="text-danger">Salida</td>
+						{% else %}
+							<td class="text-success">Entrada</td>
+						{% endif %}
+						<td>{{ item.cantidad }}</td>
+						<td>{{ item.orden_compra }}</td>
+						<td>{{ item.guia }}</td>
+						<td>{{ item.observacion}}</td>
+						{% comment %} <td><a href="{% url 'add-material' item.id %}" class="btn btn-outline-secondary">Editar</a></td> {% endcomment %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock content %}
+
+{% block script  %}
+
+	<script > 
+		$(document).ready(function() {
+			var table = $('#datatable').DataTable( {
+				colReorder: true,
+				responsive: false,
+				dom: 
+					"<'row'<'col-sm-3'B><'col-sm-6 text-center'l><'col-sm-3 text-end'f>>" +
+					"<'row'<'col-sm-12'tr>>" +
+					"<'row'<'col-sm-5'i><'col-sm-7'p>>",
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+				},
+				buttons: [
+					{
+						extend: 'collection',
+						text: "<i class='fa-solid fa-gear'></i> Config",
+						className: 'custom-html-collection',
+						buttons: [
+							'<h3>Exportar:</h3>',
+							{
+								extend: 'pdf',
+								text: '<i class="fa-regular fa-file-pdf"></i> PDF'
+							},
+							{
+								extend: 'csv',
+								text: '<i class="fa-solid fa-file-csv"></i> CSV'
+							},
+							{
+								extend: 'excel',
+								text: '<i class="fa-regular fa-file-excel"></i> EXCEL'
+							},
+							'<h3 class="not-top-heading">Columnas visibles:</h3>',
+							{
+								extend: 'columnsToggle',
+								columnText: function ( dt, idx, title ) {
+									return (idx+1)+': '+title;
+								}
+							}
+						]
+					},
+					{
+						text: '<i class="fa-regular fa-square-plus"></i> Nuevo',
+						action: function ( e, dt, node, conf ) {
+							window.location.href = "{% url 'add-kardex' %}";
+						}
+					},
+				]
+			} );
+			
+		} );
+	</script>
+{% endblock script %}

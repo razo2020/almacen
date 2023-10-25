@@ -1,0 +1,54 @@
+<nav class="navbar navbar-expand-lg bg-light">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="{% url 'index' %}">Gestion de Almacen</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+			<ul class="navbar-nav">
+				{% if user.is_authenticated %}
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fa-solid fa-money-check-dollar"></i> Requerimientos
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="{% url 'add-material' %}"><i class="fa-solid fa-cart-shopping"></i> Pedidos</a></li>
+							<li><a class="dropdown-item" href="{% url 'materiales' %}"><i class="fa-solid fa-barcode"></i> Materiales</a></li>
+						</ul>
+					</li>
+
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fa fa-warehouse fa-fw"></i> Almacen
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="{% url 'kardex' %}"><i class="fa-solid fa-dolly"></i> Kardex</a></li> 
+							<li><a class="dropdown-item" href="{% url 'inventario' %}"><i class="fa fa-boxes-stacked fa-fw"></i> Inventario</a></li>
+						</ul>
+					</li>
+					<li class="nav-item btn-group open">
+						<a class="btn btn-primary border-bottom border-body dropdown-toggle" role="button" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+							<i class="fa fa-user fa-fw"></i> {{ user.username }}
+						</a>
+						<ul class="dropdown-menu" >
+							<li><a class="dropdown-item" href="#"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+							<li><a class="dropdown-item" href="#"><i class="fa fa-trash-can fa-fw"></i> Delete</a></li>
+							<li><a class="dropdown-item" href="#"><i class="fa fa-ban fa-fw"></i> Ban</a></li>
+							<li class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-power-off"></i> Salir</a></li>
+						</ul>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'login' %}">Logearse</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'signup' %}">Registrarse</a>
+					</li>
+				{% endif %}
+
+			</ul>
+		</div>
+	</div>
+</nav>

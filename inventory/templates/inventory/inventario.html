@@ -1,0 +1,162 @@
+{% extends 'inventory/base.html' %}
+{% block style %}
+	<style>
+		div.dt-button-collection {
+			width: 240px;
+		}
+		 
+		div.dt-button-collection button.dt-button {
+			display: inline-block;
+			width: 32%;
+		}
+		div.dt-button-collection button.buttons-colvis {
+			
+			display: inline-block;
+			font-size: 20px;
+  padding: 20px;
+			width: 49%;
+		}
+		div.dt-button-collection h3 {
+			color:#ffffff;
+			font-weight: bold;
+			background-color:#808080;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			font-weight: 100;
+			border-bottom: 1px solid rgba(150, 150, 150, 0.5);
+			font-size: 1em;
+			padding: 0 1em;
+		}
+		div.dt-button-collection h3.not-top-heading {
+			margin-top: 10px;
+		}
+	</style>
+{% endblock style %}
+{% block content %}
+	{% if messages %}
+		<div class="row mt-3">
+			{% for message in messages %}
+				{% if message.tags == 'error' %}
+					<div class="col-md-10 col-12 mx-auto alert alert-danger">
+						{{ message }}
+					</div>
+				{% else %}
+					<div class="col-md-10 col-12 mx-auto alert alert-success">
+						{{ message }}
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="col-md-10 col-12 mx-auto mt-5">
+			<div class="container  text-center justify-content-md-center">
+				<h1>INVENTARIO</h1>
+			</div>
+			<table id='datatable' class="table table-hover row-border order-column compact">
+				<thead>
+					<tr>
+						<th scope="col">ALMACEN</th>
+						<th scope="col">UBICACION</th>
+						<th scope="col">MATERIAL</th>
+						<th scope="col">STOCK</th>
+						<th scope="col">MESES</th>
+						<th scope="col">COBERTURA</th>
+						<th scope="col">FRECUENCIA</th>
+						<th scope="col">PROMEDIO</th>
+						<th scope="col">Q1</th>
+						<th scope="col">Q2</th>
+						<th scope="col">Q3</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if items|length == 0 %}
+					<tr>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					{% endif %}
+
+					{% for item in items %}
+					<tr>
+						<td>{{ item.almacen }}</td>
+						<td>{{ item.nom_ubicacion }}</td>
+						<td>{{ item.material }}</td>
+						<td>{{ item.stock}}</td>
+						<td>{{ item.meses }}</td>
+						<td>{{ item.cobertura }}</td>
+						<td>{{ item.frecuencia }}</td>
+						<td>{{ item.promedio }}</td>
+						<td>{{ item.primer_cuartil }}</td>
+						<td>{{ item.segundo_cuartil }}</td>
+						<td>{{ item.tercer_cuartil }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+		</div>
+	</div>
+{% endblock content %}
+
+{% block script  %}
+
+	<script > 
+		$(document).ready(function() {
+			var table = $('#datatable').DataTable( {
+				dom: 
+      				"<'row'<'col-sm-3'B><'col-sm-6 text-center'l><'col-sm-3 text-end'f>>" +
+      				"<'row'<'col-sm-12'tr>>" +
+      				"<'row'<'col-sm-5'i><'col-sm-7'p>>",
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+				},
+				buttons: [
+					{
+						extend: 'collection',
+						text: "<i class='fa-solid fa-gear'></i> Config",
+						className: 'custom-html-collection',
+						buttons: [
+							'<h3>Exportar:</h3>',
+							{
+								extend: 'pdf',
+								text: '<i class="fa-regular fa-file-pdf"></i> PDF'
+							},
+							{
+								extend: 'csv',
+								text: '<i class="fa-solid fa-file-csv"></i> CSV'
+							},
+							{
+								extend: 'excel',
+								text: '<i class="fa-regular fa-file-excel"></i> EXCEL'
+							},
+							'<h3 class="not-top-heading">Columnas visibles:</h3>',
+							{
+								extend: 'columnsToggle',
+								columnText: function ( dt, idx, title ) {
+									return (idx+1)+': '+title;
+								}
+							}
+						]
+					},
+					{
+						text: "<i class='fa-solid fa-rotate'></i> Actualizar",
+						action: function ( e, dt, node, conf ) {
+							console.log( 'Button 1 clicked on' );
+						}
+					},
+        		]
+			} );
+			
+		} );
+	</script>
+{% endblock script %}
